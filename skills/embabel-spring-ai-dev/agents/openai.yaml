@@ -1,0 +1,4 @@
+interface:
+  display_name: "Embabel + Spring AI 開發"
+  short_description: "以 GOAP 和 Spring Boot 落地 JVM agent。"
+  default_prompt: "Use $embabel-spring-ai-dev to turn this business process into a testable Embabel + Spring AI JVM agent."

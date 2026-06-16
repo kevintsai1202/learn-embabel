@@ -1,0 +1,1583 @@
+<!doctype html>
+<!--
+  Embabel on Spring Boot — 教學網站（vanilla SPA）
+  資料權威：course-data.js（window.COURSE）
+  本檔只負責「怎麼呈現」；改課程內容請改 course-data.js。
+  本機啟動：npx serve .（file:// 會擋 localStorage，務必走 HTTP）
+-->
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Embabel on Spring Boot — JVM Agentic AI 教學</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%232563eb'/%3E%3Ccircle cx='32' cy='32' r='18' fill='%23f8fafc'/%3E%3Cpath d='M22 34h20M32 22v20M24 25l16 14M40 25L24 39' stroke='%232563eb' stroke-width='4' stroke-linecap='round'/%3E%3C/svg%3E" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+  /* ============================================================
+   * design tokens — teaching-site-design-system tokens.css
+   * ============================================================ */
+  :root {
+    --bg:           oklch(99% 0.002 240);
+    --surface:      oklch(100% 0 0);
+    --surface-2:    oklch(97.5% 0.004 250);
+    --fg:           oklch(18% 0.012 250);
+    --muted:        oklch(54% 0.012 250);
+    --muted-2:      oklch(72% 0.01 250);
+    --border:       oklch(92% 0.005 250);
+    --border-strong: oklch(82% 0.008 250);
+    --accent:       oklch(58% 0.18 255);
+    --accent-soft:  oklch(95% 0.04 255);
+    --accent-deep:  oklch(45% 0.18 255);
+    --accent-2:      oklch(66% 0.14 65);
+    --accent-2-soft: oklch(94% 0.045 65);
+    --accent-2-deep: oklch(48% 0.14 60);
+    --success:       oklch(58% 0.16 145);
+    --success-soft:  oklch(95% 0.04 145);
+    --danger:        oklch(60% 0.18 25);
+    --danger-soft:   oklch(95% 0.05 25);
+    --warning:       oklch(70% 0.13 75);
+    --warning-soft:  oklch(95% 0.05 75);
+    --dot-color: oklch(80% 0.005 250 / 0.6);
+    --dot-bg: radial-gradient(circle at 1px 1px, var(--dot-color) 1px, transparent 0);
+    --font-display: "Nunito", "PingFang TC", "Noto Sans TC", "Microsoft JhengHei", system-ui, sans-serif;
+    --font-body:    var(--font-display);
+    --font-mono:    var(--font-display);
+    --r-sm: 6px;
+    --r-md: 10px;
+    --r-lg: 14px;
+    --sidebar-w:   268px;
+    --header-h:    56px;
+    --content-max: 880px;
+    --shadow-lift: 0 6px 18px -10px oklch(20% 0.02 250 / 0.18),
+                   0 2px 4px  -2px oklch(20% 0.02 250 / 0.06);
+  }
+  [data-theme="dark"] {
+    --bg:           oklch(16% 0.014 250);
+    --surface:      oklch(19.5% 0.014 250);
+    --surface-2:    oklch(22.5% 0.014 250);
+    --fg:           oklch(96% 0.005 250);
+    --muted:        oklch(68% 0.012 250);
+    --muted-2:      oklch(50% 0.012 250);
+    --border:       oklch(28% 0.014 250);
+    --border-strong: oklch(38% 0.014 250);
+    --accent:       oklch(70% 0.17 255);
+    --accent-soft:  oklch(30% 0.08 255);
+    --accent-deep:  oklch(82% 0.13 255);
+    --accent-2:      oklch(78% 0.13 65);
+    --accent-2-soft: oklch(30% 0.075 65);
+    --accent-2-deep: oklch(86% 0.12 65);
+    --success:       oklch(70% 0.16 145);
+    --success-soft:  oklch(28% 0.07 145);
+    --danger:        oklch(70% 0.18 25);
+    --danger-soft:   oklch(28% 0.08 25);
+    --warning:       oklch(78% 0.13 75);
+    --warning-soft:  oklch(28% 0.08 75);
+    --shadow-lift: 0 8px 22px -10px oklch(0% 0 0 / 0.55),
+                   0 2px 6px -2px oklch(0% 0 0 / 0.3);
+    color-scheme: dark;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: var(--font-body);
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    letter-spacing: -0.005em;
+    transition: background-color 220ms ease, color 220ms ease;
+  }
+  h1, h2, h3, h4 {
+    font-family: var(--font-display);
+    letter-spacing: -0.02em;
+    line-height: 1.25;
+    margin: 0;
+    color: var(--fg);
+  }
+  h1 { font-size: 32px; font-weight: 660; }
+  h2 { font-size: 24px; font-weight: 600; }
+  h3 { font-size: 18px; font-weight: 600; }
+  h4 { font-size: 15px; font-weight: 600; margin: 20px 0 8px; }
+  p  { margin: 0 0 12px; text-wrap: pretty; }
+  a  { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; text-underline-offset: 2px; }
+  ::selection { background: var(--accent-soft); color: var(--accent-deep); }
+  button { font: inherit; color: inherit; cursor: pointer; }
+  code {
+    font-family: var(--font-mono);
+    font-size: 0.92em;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 0 5px;
+  }
+
+  /* ===================== layout shell ===================== */
+  .app { min-height: 100vh; }
+  .sidebar {
+    position: fixed; left: 0; top: 0;
+    width: var(--sidebar-w); height: 100vh;
+    z-index: 10;
+    transition: transform 300ms cubic-bezier(0.4, 0, 0.2, 1);
+    border-right: 1px solid var(--border);
+    background: var(--surface);
+    display: flex; flex-direction: column;
+    overflow: hidden;
+  }
+  .main {
+    margin-left: var(--sidebar-w);
+    transition: margin-left 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .topbar {
+    position: sticky; top: 0; z-index: 5;
+    height: var(--header-h);
+    background: color-mix(in oklab, var(--surface) 92%, transparent);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 12px;
+    padding: 0 24px;
+  }
+  .topbar-trail { font-size: 13px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .topbar-spacer { flex: 1; }
+  .content {
+    max-width: var(--content-max);
+    margin: 0 auto;
+    padding: 32px 24px 80px;
+  }
+  .menu-btn {
+    background: none; border: 1px solid var(--border);
+    border-radius: var(--r-sm);
+    padding: 4px 10px;
+    font-size: 16px;
+    color: var(--fg);
+    cursor: pointer;
+  }
+  /* 桌機選單收折：sidebar 滑出、主內容補滿（與手機 sidebar-open 為相反的預設，不可共用 class） */
+  .app.sidebar-closed .sidebar { transform: translateX(-100%); }
+  .app.sidebar-closed .main { margin-left: 0; }
+  .theme-toggle {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 4px 12px;
+    font-size: 12px;
+  }
+  .sidebar-backdrop {
+    display: none;
+    position: fixed; inset: 0; z-index: 9;
+    background: oklch(0% 0 0 / 0.4);
+  }
+
+  @media (max-width: 768px) {
+    .sidebar { transform: translateX(-100%); }
+    /* 手機 sidebar-open 規則在 sidebar-closed 之後宣告，同特異度時後者勝出，
+       即使殘留 sidebar-closed class 也不影響手機抽屜開啟 */
+    .app.sidebar-open .sidebar { transform: translateX(0); }
+    .app.sidebar-open .sidebar-backdrop { display: block; }
+    .main { margin-left: 0; }
+    .day-hero { grid-template-columns: 1fr !important; padding: 28px 20px !important; }
+  }
+
+  /* ===================== sidebar internals ===================== */
+  .brand {
+    padding: 20px;
+    border-bottom: 1px solid var(--border);
+    background: var(--dot-bg) 0 0 / 24px 24px, var(--surface);
+  }
+  .brand-eyebrow {
+    font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 4px;
+  }
+  .brand-title { font-weight: 800; font-size: 16px; line-height: 1.3; }
+  .nav { flex: 1; overflow-y: auto; padding: 12px; }
+  .nav-link {
+    display: block;
+    padding: 8px 12px;
+    border-radius: var(--r-sm);
+    color: var(--fg);
+    font-size: 14px;
+    margin-bottom: 2px;
+  }
+  .nav-link:hover { background: var(--surface-2); text-decoration: none; }
+  .nav-link.active { background: var(--accent-soft); color: var(--accent-deep); }
+  .nav-sub { padding-left: 14px; font-size: 13px; color: var(--muted); }
+  .nav-progress {
+    padding: 16px 20px;
+    border-top: 1px solid var(--border);
+    font-size: 12px; color: var(--muted);
+  }
+  .progress-bar {
+    height: 6px; border-radius: 999px;
+    background: var(--surface-2);
+    margin-top: 6px; overflow: hidden;
+  }
+  .progress-bar-fill {
+    height: 100%; background: var(--success);
+    border-radius: 999px;
+    transition: width 300ms ease;
+  }
+
+  /* ===================== day hero ===================== */
+  .day-hero {
+    position: relative;
+    padding: 48px 32px;
+    border-radius: var(--r-lg);
+    background: var(--dot-bg) 0 0 / 24px 24px, var(--surface);
+    border: 1px solid var(--border);
+    margin-bottom: 32px;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 32px;
+    align-items: center;
+  }
+  .day-hero-numeral {
+    font-family: var(--font-display);
+    font-size: clamp(100px, 14vw, 170px);
+    font-weight: 800;
+    line-height: 0.85;
+    letter-spacing: -0.05em;
+    color: var(--accent-2);
+  }
+
+  /* ===================== signature components ===================== */
+  .task-list { list-style: none; padding: 0; margin: 0; }
+  .task-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 12px;
+    border-radius: var(--r-sm);
+    cursor: pointer;
+    transition: background 120ms ease;
+  }
+  .task-item:hover { background: var(--surface-2); }
+  .task-checkbox {
+    width: 18px; height: 18px;
+    border: 1.5px solid var(--border-strong);
+    border-radius: var(--r-sm);
+    display: grid; place-items: center;
+    font-size: 12px; color: transparent;
+    transition: all 120ms ease;
+    flex-shrink: 0;
+  }
+  .task-item:hover .task-checkbox { border-color: var(--accent); }
+  .task-item.done .task-checkbox {
+    background: var(--success);
+    border-color: var(--success);
+    color: white;
+  }
+  .task-item.done .task-label { text-decoration: line-through; color: var(--muted); }
+
+  .list { padding: 0; margin: 0 0 12px; }
+  .list li {
+    list-style: none;
+    position: relative;
+    padding-left: 28px;
+    margin-bottom: 6px;
+  }
+  .list li::before {
+    content: '✓';
+    position: absolute; left: 0; top: 1px;
+    width: 20px; height: 20px;
+    background: var(--success-soft);
+    color: var(--success);
+    border-radius: 999px;
+    text-align: center;
+    line-height: 20px;
+    font-weight: bold;
+    font-size: 12px;
+  }
+
+  .concept {
+    margin: 20px 0;
+    padding: 20px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+  }
+  .concept-heading { font-size: 17px; font-weight: 700; margin-bottom: 8px; }
+  .concept-body { margin-bottom: 12px; }
+  .kv {
+    display: grid;
+    grid-template-columns: minmax(120px, max-content) 1fr;
+    gap: 8px 16px;
+    margin: 12px 0;
+  }
+  .kv-key { font-weight: 600; color: var(--muted); }
+  .note {
+    margin-top: 12px;
+    padding: 10px 14px;
+    background: var(--accent-2-soft);
+    border-left: 3px solid var(--accent-2);
+    border-radius: var(--r-sm);
+    font-size: 14px;
+  }
+
+  .unit {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    margin: 16px 0;
+  }
+  .unit > summary {
+    padding: 16px 20px;
+    cursor: pointer;
+    display: flex; justify-content: space-between; align-items: center; gap: 12px;
+    list-style: none;
+  }
+  .unit > summary::-webkit-details-marker { display: none; }
+  .unit-title { font-weight: 700; font-size: 16px; }
+  .unit-meta { font-size: 12px; color: var(--muted); }
+  .unit-body { padding: 0 20px 20px; }
+  .unit-progress-pill {
+    font-size: 11px;
+    padding: 2px 8px;
+    background: var(--accent-soft);
+    color: var(--accent-deep);
+    border-radius: 999px;
+    white-space: nowrap;
+  }
+
+  .materials { display: flex; flex-direction: column; gap: 8px; }
+  .material-row {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 12px;
+    padding: 10px 12px;
+    background: var(--surface-2);
+    border-radius: var(--r-sm);
+    align-items: center;
+  }
+  .material-tag {
+    font-size: 11px;
+    padding: 2px 8px;
+    background: var(--accent-soft);
+    color: var(--accent-deep);
+    border-radius: 999px;
+  }
+  .material-name { font-weight: 600; }
+  .material-desc { font-size: 13px; color: var(--muted); }
+
+  .t {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 12px 0;
+    font-size: 14px;
+  }
+  .t th, .t td {
+    padding: 8px 12px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  .t th {
+    background: var(--surface-2);
+    font-weight: 800;
+    color: var(--fg);
+    font-size: 14.5px;
+    letter-spacing: 0.04em;
+  }
+  .t-wrap { overflow-x: auto; }
+
+  .chapter { margin-bottom: 56px; scroll-margin-top: calc(var(--header-h) + 16px); }
+  .eyebrow {
+    display: inline-block;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+  .lead {
+    font-size: 16px;
+    color: var(--muted);
+    margin: 12px 0 24px;
+    text-wrap: pretty;
+  }
+
+  .illustration { margin: 16px 0; text-align: center; }
+  .illustration img {
+    max-width: 100%;
+    height: auto;
+    border-radius: var(--r-md);
+    filter: drop-shadow(0 4px 12px oklch(20% 0.02 250 / 0.08));
+  }
+  .illustration-caption { font-size: 12.5px; color: var(--muted); margin-top: 8px; }
+
+  /* ===================== 提示詞卡：範例輸入與參考檔案 ===================== */
+  .prompt-example {
+    margin-top: 10px;
+    border-top: 1px dashed var(--border);
+    padding-top: 10px;
+  }
+  .prompt-example summary {
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--accent);
+  }
+  .prompt-example summary:hover { text-decoration: underline; }
+  .prompt-example-copy { margin: 10px 0 0; }
+  .prompt-files {
+    margin-top: 10px;
+    font-size: 13px;
+    display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
+  }
+  .prompt-files-label { color: var(--muted); font-weight: 700; }
+  .prompt-file-link {
+    background: var(--accent-soft);
+    color: var(--accent-deep);
+    border-radius: 999px;
+    padding: 3px 12px;
+    text-decoration: none;
+    font-weight: 700;
+  }
+  .prompt-file-link:hover { text-decoration: underline; }
+
+  /* ===================== 共用案例：資料形狀摺疊預覽 ===================== */
+  .case-shapes {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    padding: 0 16px;
+    margin: 16px 0;
+  }
+  .case-shapes summary {
+    cursor: pointer;
+    font-weight: 700;
+    padding: 12px 0;
+    color: var(--muted);
+  }
+  .case-shapes summary:hover { color: var(--fg); }
+  .case-shapes[open] summary { color: var(--fg); border-bottom: 1px solid var(--border); }
+  .case-shapes-note { font-size: 13.5px; color: var(--muted); line-height: 1.7; margin: 12px 0; }
+  .case-shapes .kv { margin-bottom: 14px; }
+
+  /* ===================== prompt card（AI 輔助開發提示詞） ===================== */
+  .prompt-card {
+    background: oklch(15% 0.02 250);
+    color: oklch(92% 0.005 250);
+    border-left: 4px solid var(--accent-2);
+    padding: 14px 16px;
+    border-radius: var(--r-md);
+    margin: 16px 0;
+  }
+  .prompt-card-head {
+    display: flex; justify-content: space-between; align-items: start; gap: 12px;
+    margin-bottom: 8px;
+  }
+  .prompt-card-title { font-weight: 700; }
+  .prompt-card-note { font-size: 12px; opacity: 0.75; margin-top: 2px; }
+  .prompt-text {
+    background: oklch(10% 0.015 250);
+    padding: 12px;
+    border-radius: var(--r-sm);
+    font-size: 13px;
+    line-height: 1.6;
+    white-space: pre-wrap;
+    margin: 0;
+    font-family: var(--font-mono);
+  }
+  .prompt-copy-btn {
+    background: var(--accent-2);
+    color: white;
+    border: 0;
+    padding: 4px 12px;
+    border-radius: 999px;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .prompt-copy-btn.ok { background: var(--success); }
+
+  /* ===================== code block（案例 Java 範例） ===================== */
+  .code-block {
+    background: oklch(15% 0.02 250);
+    color: oklch(90% 0.01 250);
+    padding: 14px 16px;
+    border-radius: var(--r-md);
+    font-size: 13px;
+    line-height: 1.55;
+    overflow-x: auto;
+    white-space: pre;
+    margin: 12px 0;
+    font-family: Consolas, 'Cascadia Code', monospace;
+  }
+
+  /* ===================== quiz ===================== */
+  .quiz-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    padding: 16px 20px;
+    margin: 12px 0;
+  }
+  .quiz-q { font-weight: 700; margin-bottom: 10px; }
+  .quiz-opt {
+    display: flex; align-items: start; gap: 10px;
+    padding: 8px 12px;
+    border: 1px solid var(--border);
+    border-radius: var(--r-sm);
+    margin-bottom: 6px;
+    cursor: pointer;
+    transition: all 120ms ease;
+  }
+  .quiz-opt:hover { border-color: var(--accent); background: var(--accent-soft); }
+  .quiz-opt.selected { border-color: var(--accent); background: var(--accent-soft); }
+  .quiz-opt.correct { border-color: var(--success); background: var(--success-soft); }
+  .quiz-opt.wrong { border-color: var(--danger); background: var(--danger-soft); }
+  .quiz-back { font-size: 13px; margin-top: 8px; display: none; }
+  .quiz-item.revealed .quiz-back { display: block; }
+  .quiz-actions { display: flex; align-items: center; gap: 16px; margin: 20px 0; }
+  .btn-primary {
+    background: var(--accent);
+    color: white;
+    border: 0;
+    padding: 10px 24px;
+    border-radius: var(--r-sm);
+    font-weight: 700;
+  }
+  .btn-primary:hover { background: var(--accent-deep); }
+  .quiz-score { font-weight: 800; font-size: 18px; }
+
+  .overview-meta {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 12px;
+    margin: 20px 0;
+  }
+  .overview-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    padding: 14px 16px;
+  }
+  .overview-card-label { font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+  .overview-card-value { font-weight: 700; margin-top: 4px; }
+
+  /* ===================== 講師介紹卡（網站最前面） ===================== */
+  .instructor-card {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    padding: 20px 22px;
+    margin: 18px 0 24px;
+  }
+  .instructor-avatar {
+    width: 96px; height: 96px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    object-fit: cover;
+    border: 2px solid var(--border-strong);
+  }
+  .instructor-name { font-weight: 800; font-size: 18px; }
+  .instructor-handle { font-size: 13px; color: var(--muted); margin-top: 2px; }
+  .instructor-handle a { color: var(--accent); text-decoration: none; }
+  .instructor-handle a:hover { text-decoration: underline; }
+  .instructor-stats { display: flex; gap: 8px; margin-top: 8px; flex-wrap: wrap; }
+  .instructor-stat {
+    font-size: 12px;
+    background: var(--accent-soft);
+    color: var(--accent-deep);
+    border-radius: 999px;
+    padding: 3px 10px;
+  }
+  .instructor-stat strong { margin-right: 4px; }
+  .instructor-bio { font-size: 14px; line-height: 1.7; color: var(--muted); margin: 10px 0 0; }
+  @media (max-width: 640px) {
+    .instructor-card { flex-direction: column; text-align: center; }
+    .instructor-stats { justify-content: center; }
+  }
+
+  /* ===================== 素材彈出視窗（markdown 格式化呈現） ===================== */
+  .modal-backdrop {
+    position: fixed; inset: 0; z-index: 50;
+    background: oklch(10% 0.01 250 / 0.55);
+    backdrop-filter: blur(4px);
+    display: none;
+    align-items: center; justify-content: center;
+    padding: 24px;
+  }
+  .modal-backdrop.open { display: flex; }
+  .modal {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+    width: min(860px, 100%);
+    max-height: 86vh;
+    display: flex; flex-direction: column;
+    box-shadow: var(--shadow-lift);
+  }
+  .modal-head {
+    display: flex; align-items: center; gap: 12px;
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--border);
+  }
+  .modal-title { font-weight: 800; flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .modal-close {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    width: 32px; height: 32px;
+    font-size: 16px; line-height: 1;
+    flex-shrink: 0;
+  }
+  .modal-download {
+    background: var(--accent);
+    color: white;
+    border-radius: 999px;
+    padding: 5px 14px;
+    font-size: 12px;
+    font-weight: 700;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .modal-download:hover { background: var(--accent-deep); text-decoration: none; }
+  .modal-body {
+    overflow-y: auto;
+    padding: 20px 28px 32px;
+  }
+  /* markdown 格式化內容樣式 */
+  .md-content h1 { font-size: 24px; margin: 20px 0 10px; }
+  .md-content h2 { font-size: 20px; margin: 20px 0 8px; }
+  .md-content h3, .md-content h4 { font-size: 16px; margin: 16px 0 6px; }
+  .md-content p { margin: 0 0 12px; }
+  .md-content ul, .md-content ol { margin: 0 0 12px; padding-left: 24px; }
+  .md-content li { margin-bottom: 4px; }
+  .md-content blockquote {
+    margin: 12px 0; padding: 8px 16px;
+    border-left: 3px solid var(--accent-2);
+    background: var(--accent-2-soft);
+    border-radius: var(--r-sm);
+  }
+  .md-content blockquote p { margin: 0; }
+  .md-content pre {
+    background: oklch(15% 0.02 250);
+    color: oklch(90% 0.01 250);
+    padding: 12px 16px;
+    border-radius: var(--r-md);
+    overflow-x: auto;
+    font-size: 13px;
+    font-family: Consolas, 'Cascadia Code', monospace;
+  }
+  .md-content img { max-width: 100%; border-radius: var(--r-md); }
+  .md-content hr { border: 0; border-top: 1px solid var(--border); margin: 20px 0; }
+  .md-content table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 14px; }
+  .md-content th, .md-content td { padding: 6px 10px; text-align: left; border-bottom: 1px solid var(--border); }
+  .md-content th { background: var(--surface-2); }
+  @media (max-width: 768px) {
+    .modal-backdrop { padding: 0; }
+    .modal { width: 100%; max-height: 100vh; border-radius: 0; }
+  }
+
+  .toast {
+    position: fixed; bottom: 24px; left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    background: var(--fg); color: var(--bg);
+    padding: 10px 20px; border-radius: 999px;
+    font-size: 14px; z-index: 100;
+    opacity: 0; transition: all 300ms ease;
+    pointer-events: none;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  @media (max-width: 768px) {
+    .toast {
+      left: auto;
+      right: 12px;
+      bottom: max(12px, env(safe-area-inset-bottom));
+      max-width: min(220px, calc(100vw - 24px));
+      border-radius: var(--r-md);
+      padding: 8px 12px;
+      font-size: 12px;
+      line-height: 1.45;
+      transform: translateY(80px);
+    }
+    .toast.show { transform: translateY(0); }
+  }
+  </style>
+</head>
+<body>
+  <div class="app" id="app">
+
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-eyebrow">JVM Agentic AI</div>
+        <div class="brand-title">Embabel on Spring Boot</div>
+      </div>
+      <nav class="nav" id="nav"></nav>
+      <div class="nav-progress" id="navProgress"></div>
+    </aside>
+    <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+    <main class="main">
+      <header class="topbar">
+        <button class="menu-btn" id="menuBtn" type="button" aria-label="開關選單">☰</button>
+        <div class="topbar-trail" id="topbarTrail"></div>
+        <div class="topbar-spacer"></div>
+        <button class="theme-toggle" id="themeToggle" type="button" aria-label="切換主題">🌓 主題</button>
+      </header>
+      <div class="content" id="content"></div>
+    </main>
+
+  </div>
+  <div class="toast" id="toast"></div>
+
+  <!-- 素材彈出視窗 -->
+  <div class="modal-backdrop" id="modalBackdrop">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <div class="modal-head">
+        <div class="modal-title" id="modalTitle"></div>
+        <a class="modal-download" id="modalDownload" href="#" download>⬇ 下載</a>
+        <button class="modal-close" id="modalClose" type="button" aria-label="關閉">✕</button>
+      </div>
+      <div class="modal-body"><div class="md-content" id="modalContent"></div></div>
+    </div>
+  </div>
+
+  <script src="course-data.js"></script>
+  <script>
+  /* ============================================================
+   * localStorage 狀態（鍵名發布後不可改）
+   * ============================================================ */
+  const STORE_KEY = 'learn-embabel-progress-v1';
+  const store = {
+    load() {
+      try { return JSON.parse(localStorage.getItem(STORE_KEY)) || { tasks: {}, quiz: {} }; }
+      catch { return { tasks: {}, quiz: {} }; }
+    },
+    save(s) { localStorage.setItem(STORE_KEY, JSON.stringify(s)); }
+  };
+  let state = store.load();
+
+  /* ============================================================
+   * DOM helper（不對使用者內容用 innerHTML，避免 XSS）
+   * ============================================================ */
+  const el = (tag, attrs = {}, ...children) => {
+    const node = document.createElement(tag);
+    for (const [k, v] of Object.entries(attrs)) {
+      if (k === 'class') node.className = v;
+      else if (k.startsWith('on') && typeof v === 'function') node.addEventListener(k.slice(2), v);
+      else if (v !== false && v != null) node.setAttribute(k, v);
+    }
+    for (const c of children.flat()) {
+      if (c == null || c === false) continue;
+      node.append(c instanceof Node ? c : document.createTextNode(String(c)));
+    }
+    return node;
+  };
+  const clear = (node) => { while (node.firstChild) node.removeChild(node.firstChild); };
+
+  /* ============================================================
+   * 安全的行內 markdown：支援 **bold** 與 `code`
+   * ============================================================ */
+  function inlineMarkdown(str) {
+    const frag = document.createDocumentFragment();
+    const s = String(str);
+    // 交錯切割 **bold**、`code` 與 [text](url)
+    const re = /(\*\*[^*]+\*\*|`[^`]+`|\[[^\]]+\]\((https?:\/\/[^)]+)\))/g;
+    let last = 0, m;
+    while ((m = re.exec(s)) !== null) {
+      if (m.index > last) frag.append(document.createTextNode(s.slice(last, m.index)));
+      const token = m[0];
+      if (token.startsWith('**')) frag.append(el('strong', {}, token.slice(2, -2)));
+      else if (token.startsWith('`')) frag.append(el('code', {}, token.slice(1, -1)));
+      else {
+        const text = token.slice(1, token.indexOf(']('));
+        frag.append(el('a', { href: m[2], target: '_blank', rel: 'noopener' }, text));
+      }
+      last = m.index + token.length;
+    }
+    if (last < s.length) frag.append(document.createTextNode(s.slice(last)));
+    return frag;
+  }
+
+  /* ============================================================
+   * toast 通知
+   * ============================================================ */
+  let toastTimer = null;
+  function toast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove('show'), 2200);
+  }
+
+  /* ============================================================
+   * 輕量 markdown 渲染器（XSS-safe：純 DOM 構建，不用 innerHTML）
+   * 支援：headings、段落、清單、code fence、blockquote、表格、hr、圖片
+   * 行內：**bold**、`code`、[text](url)
+   * ============================================================ */
+  function inlineMd(s) { return inlineMarkdown(s); }
+  function renderMarkdown(md) {
+    const root = el('div', {});
+    const lines = String(md).replace(/\r\n/g, '\n').split('\n');
+    let i = 0;
+    while (i < lines.length) {
+      const line = lines[i];
+      // code fence
+      if (/^```/.test(line)) {
+        const buf = [];
+        i++;
+        while (i < lines.length && !/^```/.test(lines[i])) { buf.push(lines[i]); i++; }
+        i++; // 跳過收尾 ```
+        root.append(el('pre', {}, buf.join('\n')));
+        continue;
+      }
+      // heading
+      const h = line.match(/^(#{1,6})\s+(.*)$/);
+      if (h) {
+        root.append(el(`h${h[1].length}`, {}, inlineMd(h[2])));
+        i++; continue;
+      }
+      // hr
+      if (/^(-{3,}|\*{3,})\s*$/.test(line)) { root.append(el('hr')); i++; continue; }
+      // 獨立圖片行
+      const img = line.match(/^!\[([^\]]*)\]\(([^)]+)\)\s*$/);
+      if (img) {
+        if (img[2]) root.append(el('img', { src: img[2], alt: img[1], loading: 'lazy' }));
+        i++; continue;
+      }
+      // blockquote
+      if (/^>\s?/.test(line)) {
+        const buf = [];
+        while (i < lines.length && /^>\s?/.test(lines[i])) { buf.push(lines[i].replace(/^>\s?/, '')); i++; }
+        const bq = el('blockquote', {});
+        bq.append(el('p', {}, inlineMd(buf.join(' '))));
+        root.append(bq);
+        continue;
+      }
+      // 清單（- * 或 1.）
+      if (/^\s*([-*]|\d+\.)\s+/.test(line)) {
+        const ordered = /^\s*\d+\./.test(line);
+        const list = el(ordered ? 'ol' : 'ul', {});
+        while (i < lines.length && /^\s*([-*]|\d+\.)\s+/.test(lines[i])) {
+          list.append(el('li', {}, inlineMd(lines[i].replace(/^\s*([-*]|\d+\.)\s+/, ''))));
+          i++;
+        }
+        root.append(list);
+        continue;
+      }
+      // 表格
+      if (/^\|.*\|\s*$/.test(line) && i + 1 < lines.length && /^\|[\s\-:|]+\|\s*$/.test(lines[i + 1])) {
+        const splitRow = r => r.trim().replace(/^\||\|$/g, '').split('|').map(c => c.trim());
+        const table = el('table', {});
+        const thead = el('thead');
+        thead.append(el('tr', {}, ...splitRow(line).map(c => el('th', {}, inlineMd(c)))));
+        table.append(thead);
+        i += 2;
+        const tbody = el('tbody');
+        while (i < lines.length && /^\|.*\|\s*$/.test(lines[i])) {
+          tbody.append(el('tr', {}, ...splitRow(lines[i]).map(c => el('td', {}, inlineMd(c)))));
+          i++;
+        }
+        table.append(tbody);
+        root.append(table);
+        continue;
+      }
+      // 空行
+      if (!line.trim()) { i++; continue; }
+      // 段落（合併連續文字行）
+      const buf = [line];
+      i++;
+      while (i < lines.length && lines[i].trim() &&
+             !/^(#{1,6}\s|```|>\s?|\s*([-*]|\d+\.)\s|\||!\[|-{3,}\s*$)/.test(lines[i])) {
+        buf.push(lines[i]); i++;
+      }
+      root.append(el('p', {}, inlineMd(buf.join(' '))));
+    }
+    return root;
+  }
+
+  /* ============================================================
+   * 素材彈出視窗：fetch md → 格式化呈現
+   * ============================================================ */
+  const modalBackdrop = () => document.getElementById('modalBackdrop');
+  function closeModal() { modalBackdrop().classList.remove('open'); }
+  async function openMaterialModal(url, title) {
+    const bd = modalBackdrop();
+    document.getElementById('modalTitle').textContent = title;
+    // 下載按鈕：指向原始檔，download 屬性取實體檔名
+    const dl = document.getElementById('modalDownload');
+    dl.href = url;
+    dl.setAttribute('download', url.split('/').pop());
+    const content = document.getElementById('modalContent');
+    clear(content);
+    content.append(el('p', {}, '載入中…'));
+    bd.classList.add('open');
+    try {
+      const res = await fetch(url);
+      if (!res.ok) throw new Error(res.status);
+      const text = await res.text();
+      clear(content);
+      // 依檔型分流：md 格式化呈現；程式檔（java/xml/yml/json）用 code 檢視
+      if (/\.md$/i.test(url)) content.append(renderMarkdown(text));
+      else content.append(el('pre', { class: 'code-block', style: 'white-space:pre-wrap' }, text));
+      bd.querySelector('.modal-body').scrollTop = 0;
+    } catch {
+      clear(content);
+      content.append(el('p', {}, '素材載入失敗，請改用下載連結或確認檔案存在。'));
+    }
+  }
+
+  /* ============================================================
+   * 素材路由（三處同步：實體檔 / course-data.js / 這裡）
+   * ============================================================ */
+  function getMaterialUrl(name) {
+    const base = 'course-package/materials';
+    if (name.includes('business-process-list')) return `${base}/business-process-list-sample.md`;
+    if (name.includes('goap-action-table')) return `${base}/goap-action-table-sample.md`;
+    if (name.includes('CustomerCareAgent')) return `${base}/CustomerCareAgent.java`;
+    if (name.includes('traveller-activity-sample')) return `${base}/traveller-activity-sample.json`;
+    if (name.includes('pom-sample')) return `${base}/pom-sample.xml`;
+    if (name.includes('application-sample')) return `${base}/application-sample.yml`;
+    if (name.includes('travel-policy')) return `${base}/travel-policy.md`;
+    if (name.includes('test-checklist')) return `${base}/test-checklist-sample.md`;
+    if (name.includes('action-audit-sample')) return `${base}/action-audit-sample.json`;
+    return null;
+  }
+
+  /* ============================================================
+   * 插圖：PNG-first，onerror fallback 到 SVG
+   * ============================================================ */
+  /**
+   * 渲染 AI 輔助插圖元件 (改為僅使用 PNG 圖片格式)
+   * @param {string} name 插圖主檔名
+   * @param {string} alt 替代文字說明
+   * @returns {HTMLElement} 包含 img 元素的包裝 div DOM 元素
+   */
+  function renderIllustration(name, alt) {
+    // 建立插圖外層包裹容器
+    const wrap = el('div', { class: 'illustration' });
+    // 建立 img 元素，src 只指向 png 檔名
+    const img = el('img', { src: `assets/illustrations/${name}.png`, alt: alt || '' });
+    wrap.append(img);
+    return wrap;
+  }
+
+  /* ============================================================
+   * concept 區塊（單元的教學主體）
+   * ============================================================ */
+  function renderConcept(c) {
+    const w = el('div', { class: 'concept' });
+    if (c.heading) w.append(el('div', { class: 'concept-heading' }, c.heading));
+    if (c.body) {
+      const body = el('div', { class: 'concept-body' });
+      body.append(inlineMarkdown(c.body));
+      w.append(body);
+    }
+    if (c.illustration) w.append(renderIllustration(c.illustration));
+    // assets/ 根目錄的手繪資訊圖（中文檔名；與 illustration 的 PNG/SVG fallback 機制不同）
+    if (c.image) w.append(renderCaseImage(c.image));
+    if (c.list && c.list.length) {
+      const kv = el('div', { class: 'kv' });
+      c.list.forEach(([k, v]) => {
+        kv.append(el('div', { class: 'kv-key' }, inlineMarkdown(k)));
+        kv.append(el('div', { class: 'kv-val' }, inlineMarkdown(v)));
+      });
+      w.append(kv);
+    }
+    if (c.table) {
+      const t = el('table', { class: 't' });
+      const thead = el('thead');
+      thead.append(el('tr', {}, ...c.table.head.map(h => el('th', {}, inlineMarkdown(h)))));
+      t.append(thead);
+      const tb = el('tbody');
+      c.table.rows.forEach(r => tb.append(el('tr', {}, ...r.map(cell => el('td', {}, inlineMarkdown(cell))))));
+      t.append(tb);
+      w.append(el('div', { class: 't-wrap' }, t));
+    }
+    if (c.code) w.append(el('pre', { class: 'code-block' }, c.code));
+    if (c.note) {
+      const note = el('div', { class: 'note' });
+      note.append(inlineMarkdown(c.note));
+      w.append(note);
+    }
+    return w;
+  }
+
+  /**
+   * 渲染 AI 輔助開發提示詞卡片元件 (提供一鍵複製功能)
+   * @param {Object} p 提示詞物件，包含 id, title, note, text 等屬性
+   * @returns {HTMLElement} 產生的卡片 DOM 元素
+   */
+  function renderPromptCard(p) {
+    // 建立卡片外層容器，並綁定對應的 ID
+    const w = el('div', { class: 'prompt-card', id: p.id });
+    const head = el('div', { class: 'prompt-card-head' });
+    const left = el('div', {});
+    
+    // 根據提示詞 ID (例如 d1-p4) 解析出對應的圓圈編號字串 (如 ④)
+    let circledNum = '';
+    const numMatch = p.id.match(/-p(\d+)/);
+    if (numMatch) {
+      const numIndex = parseInt(numMatch[1], 10);
+      const circledArray = ['⓪', '①', '②', '③', '④', '⑤', '⑥', '⑦', '⑧', '⑨', '⑩'];
+      circledNum = circledArray[numIndex] || String(numIndex);
+    }
+    
+    // 組合最終顯示的標題，前置加上如「提示詞④：」的編號標記
+    const titleText = circledNum ? `提示詞${circledNum}：${p.title}` : p.title;
+    
+    left.append(el('div', { class: 'prompt-card-title' }, titleText));
+    if (p.note) left.append(el('div', { class: 'prompt-card-note' }, p.note));
+    head.append(left);
+    
+    // 建立複製按鈕，點擊時嘗試寫入剪貼簿
+    const btn = el('button', { class: 'prompt-copy-btn', type: 'button' }, '複製');
+    btn.addEventListener('click', async () => {
+      try { await navigator.clipboard.writeText(p.text); } catch { /* http 環境可能無權限 */ }
+      btn.classList.add('ok');
+      btn.textContent = '已複製';
+      setTimeout(() => { btn.classList.remove('ok'); btn.textContent = '複製'; }, 1800);
+    });
+    head.append(btn);
+    w.append(head);
+    w.append(el('pre', { class: 'prompt-text' }, p.text));
+
+    // 範例輸入：提示詞中「（在此貼上…）」段落的已填好版本（Antechinus 案例），降低學員第一次使用的門檻
+    if (p.example) {
+      const ex = el('details', { class: 'prompt-example' });
+      ex.append(el('summary', {}, '範例輸入：不知道要填什麼？點開看用 Antechinus 案例填好的版本'));
+      const exBtn = el('button', { class: 'prompt-copy-btn prompt-example-copy', type: 'button' }, '複製範例');
+      exBtn.addEventListener('click', async () => {
+        try { await navigator.clipboard.writeText(p.example); } catch { /* http 環境可能無權限 */ }
+        exBtn.classList.add('ok');
+        exBtn.textContent = '已複製';
+        setTimeout(() => { exBtn.classList.remove('ok'); exBtn.textContent = '複製範例'; }, 1800);
+      });
+      ex.append(exBtn);
+      ex.append(el('pre', { class: 'prompt-text' }, p.example));
+      w.append(ex);
+    }
+
+    // 參考檔案：提示詞要求貼上的檔案，直接放連結（點開彈窗檢視、可下載）
+    if (p.exampleFiles?.length) {
+      const row = el('div', { class: 'prompt-files' });
+      row.append(el('span', { class: 'prompt-files-label' }, '需貼上的參考檔案：'));
+      p.exampleFiles.forEach(name => {
+        const url = getMaterialUrl(name);
+        if (!url) return;
+        const a = el('a', { class: 'prompt-file-link', href: url, target: '_blank', rel: 'noopener' }, name);
+        a.addEventListener('click', e => { e.preventDefault(); openMaterialModal(url, name); });
+        row.append(a);
+      });
+      w.append(row);
+    }
+    return w;
+  }
+
+  /* ============================================================
+   * 任務清單（task.id 是 localStorage 鍵，不可改名）
+   * ============================================================ */
+  function renderTaskList(tasks) {
+    const list = el('ul', { class: 'task-list' });
+    tasks.forEach(t => {
+      const li = el('li', {
+        class: 'task-item' + (state.tasks[t.id] ? ' done' : ''),
+        'data-task-id': t.id
+      });
+      li.append(el('div', { class: 'task-checkbox' }, '✓'));
+      li.append(el('div', { class: 'task-label' }, t.label));
+      li.addEventListener('click', () => toggleTask(t.id, li));
+      list.append(li);
+    });
+    return list;
+  }
+  function toggleTask(id, li) {
+    if (state.tasks[id]) delete state.tasks[id];
+    else state.tasks[id] = true;
+    li.classList.toggle('done');
+    store.save(state);
+    updateProgressUI();
+    updateUnitPills();
+  }
+
+  /* ============================================================
+   * 素材列表
+   * ============================================================ */
+  function renderMaterialList(items) {
+    const w = el('div', { class: 'materials' });
+    items.forEach(m => {
+      const row = el('div', { class: 'material-row' });
+      row.append(el('div', { class: 'material-tag' }, m.type));
+      const center = el('div', {});
+      const url = getMaterialUrl(m.name);
+      if (url) {
+        // md 附件用彈出視窗格式化呈現；href 保留供「在新分頁開啟」
+        const link = el('a', { class: 'material-name', href: url, target: '_blank', rel: 'noopener' }, m.name);
+        link.addEventListener('click', e => {
+          e.preventDefault();
+          openMaterialModal(url, m.name);
+        });
+        center.append(link);
+      } else {
+        center.append(el('div', { class: 'material-name' }, m.name));
+      }
+      if (m.desc) center.append(el('div', { class: 'material-desc' }, m.desc));
+      row.append(center);
+      w.append(row);
+    });
+    return w;
+  }
+
+  /* ============================================================
+   * 單元 accordion
+   * ============================================================ */
+  function renderUnit(day, u) {
+    const det = el('details', { class: 'unit', id: `${day.id}-${u.id}` });
+    if (day.id === 'day1' && u.id === 'u-1') det.open = true;
+
+    const sum = el('summary', {});
+    const titleWrap = el('div', {});
+    titleWrap.append(el('div', { class: 'unit-title' }, u.title));
+    titleWrap.append(el('div', { class: 'unit-meta' }, u.time));
+    sum.append(titleWrap);
+    sum.append(el('span', { class: 'unit-progress-pill', 'data-unit-pill': `${day.id}-${u.id}` }, ''));
+    det.append(sum);
+
+    const body = el('div', { class: 'unit-body' });
+    if (u.goals?.length) {
+      body.append(el('h4', {}, '學習目標'));
+      const ul = el('ul', { class: 'list' });
+      u.goals.forEach(g => ul.append(el('li', {}, g)));
+      body.append(ul);
+    }
+    // hero 圖已安排在對應 concept 內，這裡不再重複渲染
+    // （illustrations[] 仍是 Coverage Floor 的清單權威）
+    // 建立 prompt id → prompt 物件的對照表（供 concept.promptAfter 使用）
+    const promptMap = {};
+    (u.prompts || []).forEach(p => { promptMap[p.id] = p; });
+    const inlinedPromptIds = new Set();
+
+    if (u.concepts?.length) {
+      body.append(el('h4', {}, '核心觀念'));
+      u.concepts.forEach(c => {
+        body.append(renderConcept(c));
+        // concept 指定 promptAfter 時，將該 prompt 卡片緊接在此 concept 後面
+        if (c.promptAfter && promptMap[c.promptAfter]) {
+          body.append(renderPromptCard(promptMap[c.promptAfter]));
+          inlinedPromptIds.add(c.promptAfter);
+        }
+      });
+    }
+    // 未被 inline 的 prompts 仍然集中在下方顯示
+    const remainingPrompts = (u.prompts || []).filter(p => !inlinedPromptIds.has(p.id));
+    if (remainingPrompts.length) {
+      body.append(el('h4', {}, 'AI 輔助開發提示詞（一鍵複製）'));
+      remainingPrompts.forEach(p => body.append(renderPromptCard(p)));
+    }
+    if (u.tasks?.length) {
+      body.append(el('h4', {}, '操作任務'));
+      body.append(renderTaskList(u.tasks));
+    }
+    if (u.materials?.length) {
+      body.append(el('h4', {}, '本單元教學素材'));
+      body.append(renderMaterialList(u.materials));
+    }
+    if (u.faq?.length) {
+      body.append(el('h4', {}, '常見學員疑問'));
+      const t = el('table', { class: 't' });
+      const thead = el('thead');
+      thead.append(el('tr', {}, el('th', {}, '疑問'), el('th', {}, '解答要點')));
+      t.append(thead);
+      const tb = el('tbody');
+      u.faq.forEach(([q, a]) => tb.append(el('tr', {}, el('td', {}, q), el('td', {}, inlineMarkdown(a)))));
+      t.append(tb);
+      body.append(el('div', { class: 't-wrap' }, t));
+    }
+    det.append(body);
+    return det;
+  }
+
+  /* ============================================================
+   * Day 區段（hero + 時程 + 單元）
+   * ============================================================ */
+  function renderDay(dayId) {
+    const d = window.COURSE[dayId];
+    if (!d) return null;
+    const meta = window.COURSE.meta.days.find(x => x.id === dayId);
+    const root = el('section', { class: 'chapter', id: dayId });
+
+    const hero = el('div', { class: 'day-hero' });
+    hero.append(el('div', { class: 'day-hero-numeral' }, `D${meta?.n ?? ''}`));
+    const heroMeta = el('div', {});
+    heroMeta.append(el('div', { class: 'eyebrow' }, d.hours || ''));
+    heroMeta.append(el('h2', {}, d.title));
+    if (d.learningGoal) heroMeta.append(el('div', { class: 'lead' }, d.learningGoal));
+    hero.append(heroMeta);
+    root.append(hero);
+
+    if (d.schedule?.length) {
+      const t = el('table', { class: 't' });
+      const thead = el('thead');
+      thead.append(el('tr', {}, el('th', {}, '時段'), el('th', {}, '單元'), el('th', {}, '重點')));
+      t.append(thead);
+      const tb = el('tbody');
+      d.schedule.forEach(r => tb.append(el('tr', {}, ...r.map(c => el('td', {}, c)))));
+      t.append(tb);
+      root.append(el('div', { class: 't-wrap' }, t));
+    }
+
+    d.units?.forEach(u => root.append(renderUnit(d, u)));
+    return root;
+  }
+
+  /* ============================================================
+   * 課程總覽
+   * ============================================================ */
+  function renderOverview() {
+    const m = window.COURSE.meta;
+    const root = el('section', { class: 'chapter', id: 'overview' });
+    root.append(el('span', { class: 'eyebrow' }, m.program || ''));
+    root.append(el('h1', {}, m.title));
+    if (m.subtitle) root.append(el('div', { class: 'lead' }, m.subtitle));
+    root.append(renderInstructorCard());
+    root.append(renderIllustration('course-intro', '課程六大主題總覽'));
+
+    const grid = el('div', { class: 'overview-meta' });
+    [['對象', '熟悉 Java / Spring Boot 的工程師'], ['時數', m.format], ['形式', m.location], ['講師', m.instructor]]
+      .forEach(([k, v]) => {
+        const card = el('div', { class: 'overview-card' });
+        card.append(el('div', { class: 'overview-card-label' }, k));
+        card.append(el('div', { class: 'overview-card-value' }, v));
+        grid.append(card);
+      });
+    root.append(grid);
+
+    root.append(el('h3', {}, '課程目標'));
+    const ul = el('ul', { class: 'list' });
+    m.objectives.forEach(o => ul.append(el('li', {}, o)));
+    root.append(ul);
+
+    root.append(el('h3', {}, '完課條件'));
+    const ul2 = el('ul', { class: 'list' });
+    m.completion.forEach(c => ul2.append(el('li', {}, c)));
+    root.append(ul2);
+    return root;
+  }
+
+  /* ============================================================
+   * 講師介紹卡（資料：course-data.js 的 instructor；放在課程總覽最前面）
+   * 結構參考 ai-workshop 站：頭像 + 名稱 + 頻道連結 + 訂閱/影片徽章 + 簡介
+   * ============================================================ */
+  function renderInstructorCard() {
+    const ins = window.COURSE.instructor;
+    if (!ins) return document.createDocumentFragment();
+
+    const card = el('div', { class: 'instructor-card' });
+    card.append(el('img', {
+      class: 'instructor-avatar',
+      src: ins.avatar,
+      alt: ins.name + ' 頭像',
+      loading: 'lazy'
+    }));
+
+    const meta = el('div', {});
+    meta.append(el('div', { class: 'instructor-name' }, ins.name));
+
+    // 頻道連結
+    const handleRow = el('div', { class: 'instructor-handle' });
+    handleRow.append(document.createTextNode('YouTube 頻道：'));
+    handleRow.append(el('a', { href: ins.url, target: '_blank', rel: 'noopener' }, ins.handle));
+    meta.append(handleRow);
+
+    // 訂閱 / 影片數徽章
+    const stats = el('div', { class: 'instructor-stats' });
+    if (ins.subscriberCount) stats.append(el('span', { class: 'instructor-stat' }, el('strong', {}, '訂閱'), ins.subscriberCount));
+    if (ins.videoCount) stats.append(el('span', { class: 'instructor-stat' }, el('strong', {}, '影片'), ins.videoCount));
+    if (stats.children.length) meta.append(stats);
+
+    // 簡介
+    if (ins.bio) meta.append(el('p', { class: 'instructor-bio' }, ins.bio));
+
+    card.append(meta);
+    return card;
+  }
+
+  /* ============================================================
+   * 共用案例
+   * ============================================================ */
+  function renderSharedCase() {
+    const sc = window.COURSE.sharedCase;
+    if (!sc) return null;
+    const root = el('section', { class: 'chapter', id: 'shared-case' });
+    root.append(el('span', { class: 'eyebrow' }, '共用案例'));
+    root.append(el('h2', {}, 'Antechinus Travel：客戶活動摘要與個人化方案'));
+    root.append(el('div', { class: 'lead' }, sc.intro));
+    // 情境目標詳情圖：放在案例介紹之後
+    if (sc.goalImage) root.append(renderCaseImage(sc.goalImage));
+    // 資料形狀：實作層內容（u-2 拆流程、u-3 設計 record 才會定義），
+    // 預設摺疊避免「還沒出題先給解答」；保留在此供 u-2～u-7 回頭查閱
+    if (sc.dataShapes?.length) {
+      const det = el('details', { class: 'case-shapes' });
+      det.append(el('summary', {}, '資料形狀預覽（u-2、u-3 會逐步定義，現在略過沒關係）'));
+      det.append(el('p', { class: 'case-shapes-note' },
+        '現在只需要知道：這個流程每一步傳遞的都是明確的 Java 物件，而不是自由文字——這正是 Embabel 與一般 LLM pipeline 的關鍵差別。下面的名字會在 u-2 拆解流程、u-3 定義 record 時逐一出現，之後可隨時回到這裡查閱總表。'));
+      const kv = el('div', { class: 'kv' });
+      sc.dataShapes.forEach(([k, v]) => {
+        kv.append(el('div', { class: 'kv-key' }, el('code', {}, k)));
+        kv.append(el('div', { class: 'kv-val' }, v));
+      });
+      det.append(kv);
+      root.append(det);
+    }
+    // 業務流程圖：放在資料形狀之後（資料形狀正是流程各步驟傳遞的物件）
+    if (sc.flowImage) root.append(renderCaseImage(sc.flowImage));
+    return root;
+  }
+
+  /**
+   * 案例資訊圖（assets/ 根目錄、中文檔名）：沿用 .illustration 樣式並加說明文字
+   */
+  function renderCaseImage(imgData) {
+    const wrap = el('div', { class: 'illustration' });
+    wrap.append(el('img', {
+      src: 'assets/' + encodeURIComponent(imgData.file), // 中文檔名 URL-encode
+      alt: imgData.caption || imgData.file,
+      loading: 'lazy'
+    }));
+    if (imgData.caption) wrap.append(el('div', { class: 'illustration-caption' }, imgData.caption));
+    return wrap;
+  }
+
+  /* ============================================================
+   * 素材總覽
+   * ============================================================ */
+  function renderMaterials() {
+    const items = window.COURSE.materials || [];
+    if (!items.length) return null;
+    const root = el('section', { class: 'chapter', id: 'materials-overview' });
+    root.append(el('span', { class: 'eyebrow' }, '範例與文件'));
+    root.append(el('h2', {}, '教學素材（供程式 / AI 讀取）'));
+    root.append(el('div', { class: 'lead' }, '素材是各單元任務與 AI 提示詞會用到的範例檔與文件——餵給 AI 的輸入、期望輸出對照、RAG 檢索文件與測試資料。點擊以彈出視窗檢視。'));
+    root.append(renderMaterialList(items));
+
+    // 延伸閱讀：課程內容出處（外部原文，新分頁）
+    const fr = window.COURSE.furtherReading || [];
+    if (fr.length) {
+      root.append(el('h3', {}, '延伸閱讀（課程內容出處）'));
+      const ul = el('ul', { class: 'list' });
+      fr.forEach(r => ul.append(el('li', {},
+        el('a', { href: r.url, target: '_blank', rel: 'noopener' }, r.title))));
+      root.append(ul);
+    }
+    return root;
+  }
+
+  /* ============================================================
+   * 結訓測驗（quiz 狀態存 localStorage；總題數動態取自資料）
+   * ============================================================ */
+  function renderQuiz() {
+    const items = window.COURSE.quiz || [];
+    if (!items.length) return null;
+    const root = el('section', { class: 'chapter', id: 'quiz' });
+    root.append(el('span', { class: 'eyebrow' }, '結訓測驗'));
+    root.append(el('h2', {}, `結訓測驗（${items.length} 題）`));
+    root.append(el('div', { class: 'lead' }, '完成全部題目後按「交卷」。答錯的題目會附上回到對應章節的連結。'));
+
+    const selections = {};
+    items.forEach((q, qi) => {
+      const card = el('div', { class: 'quiz-item', id: q.id });
+      card.append(el('div', { class: 'quiz-q' }, `${qi + 1}. ${q.q}`));
+      q.options.forEach((opt, oi) => {
+        const optEl = el('div', { class: 'quiz-opt', 'data-q': q.id, 'data-opt': oi });
+        optEl.append(el('div', {}, `${String.fromCharCode(65 + oi)}. ${opt}`));
+        optEl.addEventListener('click', () => {
+          if (card.classList.contains('revealed')) return;
+          selections[q.id] = oi;
+          card.querySelectorAll('.quiz-opt').forEach(o => o.classList.remove('selected'));
+          optEl.classList.add('selected');
+        });
+        card.append(optEl);
+      });
+      const back = el('div', { class: 'quiz-back' });
+      back.append('複習章節：');
+      back.append(el('a', { href: `#${q.sourceUnit}`, onclick: () => {
+        const det = document.getElementById(q.sourceUnit);
+        if (det) det.open = true;
+      } }, q.sourceUnit));
+      card.append(back);
+      root.append(card);
+    });
+
+    const actions = el('div', { class: 'quiz-actions' });
+    const scoreEl = el('div', { class: 'quiz-score' });
+    const submit = el('button', { class: 'btn-primary', type: 'button' }, '交卷');
+    submit.addEventListener('click', () => {
+      const unanswered = items.filter(q => selections[q.id] == null);
+      if (unanswered.length) {
+        toast(`還有 ${unanswered.length} 題未作答`);
+        return;
+      }
+      let correct = 0;
+      items.forEach(q => {
+        const card = document.getElementById(q.id);
+        card.classList.add('revealed');
+        card.querySelectorAll('.quiz-opt').forEach(o => {
+          const oi = Number(o.dataset.opt);
+          if (oi === q.answer) o.classList.add('correct');
+          else if (oi === selections[q.id]) o.classList.add('wrong');
+        });
+        if (selections[q.id] === q.answer) correct++;
+      });
+      scoreEl.textContent = `得分：${correct} / ${items.length}`;
+      state.quiz = { score: correct, total: items.length, at: new Date().toISOString() };
+      store.save(state);
+      toast(correct === items.length ? '滿分！完課條件達成 🎉' : `答對 ${correct} 題，答錯的題目可由連結回到章節複習`);
+    });
+    actions.append(submit, scoreEl);
+    root.append(actions);
+    return root;
+  }
+
+  /* ============================================================
+   * Sidebar 導覽 + scrollspy + 進度
+   * ============================================================ */
+  const SECTIONS = [
+    { id: 'overview', label: '課程總覽' },
+    { id: 'shared-case', label: '共用案例' },
+    { id: 'day1', label: '課程內容（單日 9 單元）' },
+    { id: 'materials-overview', label: '教學素材' },
+    { id: 'quiz', label: '結訓測驗' }
+  ];
+
+  function renderSidebar() {
+    const nav = document.getElementById('nav');
+    clear(nav);
+    SECTIONS.forEach(s => {
+      nav.append(el('a', { class: 'nav-link', href: `#${s.id}`, 'data-nav': s.id }, s.label));
+      // Day 底下列出單元子連結
+      const d = window.COURSE[s.id];
+      if (d?.units) {
+        d.units.forEach(u => {
+          nav.append(el('a', {
+            class: 'nav-link nav-sub',
+            href: `#${s.id}-${u.id}`,
+            onclick: () => { const det = document.getElementById(`${s.id}-${u.id}`); if (det) det.open = true; }
+          }, u.title));
+        });
+      }
+    });
+  }
+
+  function allTasks() {
+    return ['day1'].flatMap(dk => (window.COURSE[dk]?.units || []).flatMap(u => u.tasks || []));
+  }
+  function updateProgressUI() {
+    const tasks = allTasks();
+    const done = tasks.filter(t => state.tasks[t.id]).length;
+    const box = document.getElementById('navProgress');
+    clear(box);
+    box.append(el('div', {}, `任務進度 ${done} / ${tasks.length}`));
+    const bar = el('div', { class: 'progress-bar' });
+    bar.append(el('div', { class: 'progress-bar-fill', style: `width:${tasks.length ? (done / tasks.length * 100) : 0}%` }));
+    box.append(bar);
+  }
+  function updateUnitPills() {
+    ['day1'].forEach(dk => {
+      (window.COURSE[dk]?.units || []).forEach(u => {
+        const pill = document.querySelector(`[data-unit-pill="${dk}-${u.id}"]`);
+        if (!pill) return;
+        const total = (u.tasks || []).length;
+        const done = (u.tasks || []).filter(t => state.tasks[t.id]).length;
+        pill.textContent = `${done} / ${total}`;
+      });
+    });
+  }
+
+  function setupScrollSpy() {
+    const links = [...document.querySelectorAll('[data-nav]')];
+    const trail = document.getElementById('topbarTrail');
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (!e.isIntersecting) return;
+        const id = e.target.id;
+        links.forEach(l => l.classList.toggle('active', l.dataset.nav === id));
+        const s = SECTIONS.find(x => x.id === id);
+        if (s) trail.textContent = s.label;
+      });
+    }, { rootMargin: `-${56 + 8}px 0px -65% 0px` });
+    SECTIONS.forEach(s => {
+      const node = document.getElementById(s.id);
+      if (node) observer.observe(node);
+    });
+  }
+
+  /* ============================================================
+   * 主題切換 + 手機側欄
+   * ============================================================ */
+  function initTheme() {
+    const t = localStorage.getItem('learn-embabel-theme') || 'light';
+    document.documentElement.setAttribute('data-theme', t);
+    document.getElementById('themeToggle').addEventListener('click', () => {
+      const next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      localStorage.setItem('learn-embabel-theme', next);
+    });
+  }
+  function initSidebarToggle() {
+    const app = document.getElementById('app');
+    const mql = matchMedia('(max-width: 768px)');
+    const SIDEBAR_KEY = 'learn-embabel-sidebar';
+
+    // 還原桌機收折狀態（手機不受影響：媒體查詢內的 sidebar-open 規則順序在後，會蓋過殘留 class）
+    if (localStorage.getItem(SIDEBAR_KEY) === 'closed') app.classList.add('sidebar-closed');
+
+    // 選單鈕：手機開抽屜（sidebar-open）、桌機收折（sidebar-closed）—— 兩種預設相反，不可共用 class
+    document.getElementById('menuBtn').addEventListener('click', () => {
+      if (mql.matches) {
+        app.classList.toggle('sidebar-open');
+      } else {
+        const closed = app.classList.toggle('sidebar-closed');
+        try { localStorage.setItem(SIDEBAR_KEY, closed ? 'closed' : 'open'); } catch { /* 隱私模式忽略 */ }
+      }
+    });
+    // 跨越 768px 斷點時清掉手機抽屜狀態，讓新視窗的預設接手；桌機收折偏好保留
+    mql.addEventListener('change', () => app.classList.remove('sidebar-open'));
+
+    document.getElementById('sidebarBackdrop').addEventListener('click', () => app.classList.remove('sidebar-open'));
+    // 手機點選 nav 連結後自動收合抽屜
+    document.getElementById('nav').addEventListener('click', e => {
+      if (e.target.closest('a')) app.classList.remove('sidebar-open');
+    });
+  }
+
+  /* ============================================================
+   * init
+   * ============================================================ */
+  function init() {
+    const content = document.getElementById('content');
+    [
+      renderOverview(),
+      renderSharedCase(),
+      renderDay('day1'),
+      renderMaterials(),
+      renderQuiz()
+    ].filter(Boolean).forEach(s => content.append(s));
+
+    renderSidebar();
+    updateProgressUI();
+    updateUnitPills();
+    setupScrollSpy();
+    initTheme();
+    initSidebarToggle();
+
+    // 素材彈窗關閉：按鈕、點背景、ESC
+    document.getElementById('modalClose').addEventListener('click', closeModal);
+    modalBackdrop().addEventListener('click', e => { if (e.target === modalBackdrop()) closeModal(); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+  }
+  document.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>

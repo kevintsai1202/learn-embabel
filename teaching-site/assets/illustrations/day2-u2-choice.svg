@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400" role="img">
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><polygon points="0,0 10,5 0,10" fill="#64748b"/></marker></defs>
+<rect width="800" height="400" rx="12" fill="#f8fafc"/>
+<text x="400" y="30" text-anchor="middle" font-family="system-ui,'PingFang TC','Microsoft JhengHei',sans-serif" font-size="15" font-weight="700" fill="#0f172a">接入模式 decision tree</text>
+<text x="400" y="50" text-anchor="middle" font-family="system-ui,'PingFang TC','Microsoft JhengHei',sans-serif" font-size="11" font-weight="600" fill="#64748b">依「狀態位置・重用範圍・資料量」選擇 domain tool / MCP / RAG</text>
+
+    <polygon points="400,72 520,107 400,142 280,107" fill="#fef3c7" stroke="#d97706" stroke-width="1.5"/><text x="400" y="107" text-anchor="middle" dominant-baseline="central" font-family="system-ui,'PingFang TC','Microsoft JhengHei',sans-serif" font-size="13" font-weight="700" fill="#d97706">要接入什麼能力？</text>
+    <polygon points="150,192 265,240 150,288 35,240" fill="#dbeafe" stroke="#2563eb" stroke-width="1.5"/><text x="150" y="232.5" text-anchor="middle" dominant-baseline="central" font-family="system-ui,'PingFang TC','Microsoft JhengHei',sans-serif" font-size="11" font-weight="700" fill="#2563eb">需要物件內部狀態？</text><text x="150" y="247.5" text-anchor="middle" dominant-baseline="central" font-family="system-ui,'PingFang TC','Microsoft JhengHei',sans-serif" font-size="11" font-weight="700" fill="#2563eb">同一個 JVM？</text>
+    <polygon points="400,192 515,240 400,288 285,240" fill="#ede9fe" stroke="#7c3aed" stroke-width="1.5"/><text x="400" y="232.5" text-anchor="middle" dominant-baseline="central" font-family="system-ui,'PingFang TC','Microsoft JhengHei',sans-serif" font-size="11" font-weight="700" fill="#7c3aed">要跨應用・跨 runtime</text><text x="400" y="247.5" text-anchor="middle" dominant-baseline="central" font-family="system-ui,'PingFang TC','Microsoft JhengHei',sans-serif" font-size="11" font-weight="700" fill="#7c3aed">發現與重用？</text>
+    <polygon points="650,192 765,240 650,288 535,240" fill="#dcfce7" stroke="#16a34a" stroke-width="1.5"/><text x="650" y="232.5" text-anchor="middle" dominant-baseline="central" font-family="system-ui,'PingFang TC','Microsoft JhengHei',sans-serif" font-size="11" font-weight="700" fill="#16a34a">大量文件/知識庫，</text><text x="650" y="247.5" text-anchor="middle" dominant-baseline="central" font-family="system-ui,'PingFang TC','Microsoft JhengHei',sans-serif" font-size="11" font-weight="700" fill="#16a34a">讓 LLM 自行搜尋？</text>
+    <line x1="330" y1="125" x2="175" y2="190" stroke="#64748b" stroke-width="2"  marker-end="url(#arrow)"/>
+    <line x1="400" y1="142" x2="400" y2="188" stroke="#64748b" stroke-width="2"  marker-end="url(#arrow)"/>
+    <line x1="470" y1="125" x2="625" y2="190" stroke="#64748b" stroke-width="2"  marker-end="url(#arrow)"/>
+    <rect x="40" y="320" width="220" height="50" rx="4" fill="#2563eb" stroke="#2563eb" stroke-width="1.5"/><text x="150" y="345" text-anchor="middle" dominant-baseline="central" font-family="system-ui,'PingFang TC','Microsoft JhengHei',sans-serif" font-size="13" font-weight="700" fill="#ffffff">Domain tool (@Tool)</text>
+    <rect x="290" y="320" width="220" height="50" rx="4" fill="#7c3aed" stroke="#7c3aed" stroke-width="1.5"/><text x="400" y="345" text-anchor="middle" dominant-baseline="central" font-family="system-ui,'PingFang TC','Microsoft JhengHei',sans-serif" font-size="13" font-weight="700" fill="#ffffff">MCP</text>
+    <rect x="540" y="320" width="220" height="50" rx="4" fill="#16a34a" stroke="#16a34a" stroke-width="1.5"/><text x="650" y="345" text-anchor="middle" dominant-baseline="central" font-family="system-ui,'PingFang TC','Microsoft JhengHei',sans-serif" font-size="13" font-weight="700" fill="#ffffff">Agentic RAG</text>
+    <line x1="150" y1="292" x2="150" y2="316" stroke="#64748b" stroke-width="2"  marker-end="url(#arrow)"/>
+    <line x1="400" y1="292" x2="400" y2="316" stroke="#64748b" stroke-width="2"  marker-end="url(#arrow)"/>
+    <line x1="650" y1="292" x2="650" y2="316" stroke="#64748b" stroke-width="2"  marker-end="url(#arrow)"/>
+  
+</svg>

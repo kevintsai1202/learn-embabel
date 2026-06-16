@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400" role="img">
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><polygon points="0,0 10,5 0,10" fill="#64748b"/></marker></defs>
+<rect width="800" height="400" rx="12" fill="#f8fafc"/>
+<text x="400" y="30" text-anchor="middle" font-family="system-ui,'PingFang TC','Microsoft JhengHei',sans-serif" font-size="15" font-weight="700" fill="#0f172a">GOAP：從現況到目標的路徑搜尋</text>
+<text x="400" y="50" text-anchor="middle" font-family="system-ui,'PingFang TC','Microsoft JhengHei',sans-serif" font-size="11" font-weight="600" fill="#64748b">planner 在明確的 action 集合中找出可解釋路徑</text>
+
+    <rect x="35" y="175" width="140" height="56" rx="28" fill="#dbeafe" stroke="#2563eb" stroke-width="1.5"/><text x="105" y="195" text-anchor="middle" dominant-baseline="central" font-family="system-ui,'PingFang TC','Microsoft JhengHei',sans-serif" font-size="12" font-weight="700" fill="#2563eb">Current</text><text x="105" y="211" text-anchor="middle" dominant-baseline="central" font-family="system-ui,'PingFang TC','Microsoft JhengHei',sans-serif" font-size="12" font-weight="700" fill="#2563eb">World State</text>
+    <polygon points="643,175 747,175 765,203 747,231 643,231 625,203" fill="#dcfce7" stroke="#16a34a" stroke-width="1.5"/><text x="695" y="203" text-anchor="middle" dominant-baseline="central" font-family="system-ui,'PingFang TC','Microsoft JhengHei',sans-serif" font-size="13" font-weight="700" fill="#16a34a">Goal State</text>
+    <rect x="240" y="90" width="130" height="56" rx="4" fill="#ffffff" stroke="#e2e8f0" stroke-width="1.5"/><text x="305" y="118" text-anchor="middle" dominant-baseline="central" font-family="system-ui,'PingFang TC','Microsoft JhengHei',sans-serif" font-size="13" font-weight="700" fill="#0f172a">Action A</text>
+    <rect x="240" y="180" width="130" height="56" rx="4" fill="#ede9fe" stroke="#7c3aed" stroke-width="1.5"/><text x="305" y="208" text-anchor="middle" dominant-baseline="central" font-family="system-ui,'PingFang TC','Microsoft JhengHei',sans-serif" font-size="13" font-weight="700" fill="#7c3aed">Action B</text>
+    <rect x="240" y="270" width="130" height="56" rx="4" fill="#ffffff" stroke="#e2e8f0" stroke-width="1.5"/><text x="305" y="298" text-anchor="middle" dominant-baseline="central" font-family="system-ui,'PingFang TC','Microsoft JhengHei',sans-serif" font-size="13" font-weight="700" fill="#0f172a">Action C</text>
+    <rect x="440" y="130" width="130" height="56" rx="4" fill="#ffffff" stroke="#e2e8f0" stroke-width="1.5"/><text x="505" y="158" text-anchor="middle" dominant-baseline="central" font-family="system-ui,'PingFang TC','Microsoft JhengHei',sans-serif" font-size="13" font-weight="700" fill="#0f172a">Action D</text>
+    <rect x="440" y="230" width="130" height="56" rx="4" fill="#ede9fe" stroke="#7c3aed" stroke-width="1.5"/><text x="505" y="258" text-anchor="middle" dominant-baseline="central" font-family="system-ui,'PingFang TC','Microsoft JhengHei',sans-serif" font-size="13" font-weight="700" fill="#7c3aed">Action E</text>
+    <line x1="177" y1="190" x2="236" y2="122" stroke="#64748b" stroke-width="2" stroke-dasharray="4 4" marker-end="url(#arrow)"/>
+    <line x1="177" y1="205" x2="236" y2="207" stroke="#7c3aed" stroke-width="3"  marker-end="url(#arrow)"/>
+    <line x1="177" y1="222" x2="236" y2="295" stroke="#64748b" stroke-width="2" stroke-dasharray="4 4" marker-end="url(#arrow)"/>
+    <line x1="372" y1="115" x2="436" y2="150" stroke="#64748b" stroke-width="2" stroke-dasharray="4 4" marker-end="url(#arrow)"/>
+    <line x1="372" y1="215" x2="436" y2="252" stroke="#7c3aed" stroke-width="3"  marker-end="url(#arrow)"/>
+    <line x1="572" y1="155" x2="621" y2="190" stroke="#64748b" stroke-width="2" stroke-dasharray="4 4" marker-end="url(#arrow)"/>
+    <line x1="572" y1="255" x2="621" y2="212" stroke="#7c3aed" stroke-width="3"  marker-end="url(#arrow)"/>
+    <text x="400" y="352" text-anchor="middle" font-family="system-ui,'PingFang TC','Microsoft JhengHei',sans-serif" font-size="12" font-weight="600" fill="#64748b">紫色＝planner 選出的 action chain；虛線＝可行但未選的路徑</text>
+    
+    <rect x="240" y="368" width="76" height="22" rx="11" fill="#dbeafe" stroke="#2563eb" stroke-width="1.5"/><text x="278" y="379" text-anchor="middle" dominant-baseline="central" font-family="system-ui,'PingFang TC','Microsoft JhengHei',sans-serif" font-size="10" font-weight="700" fill="#2563eb">條件/狀態</text>
+    <rect x="330" y="368" width="60" height="22" rx="4" fill="#ede9fe" stroke="#7c3aed" stroke-width="1.5"/><text x="360" y="379" text-anchor="middle" dominant-baseline="central" font-family="system-ui,'PingFang TC','Microsoft JhengHei',sans-serif" font-size="10" font-weight="700" fill="#7c3aed">Action</text>
+    <polygon points="414.8,368 453.2,368 464,379 453.2,390 414.8,390 404,379" fill="#dcfce7" stroke="#16a34a" stroke-width="1.5"/><text x="434" y="379" text-anchor="middle" dominant-baseline="central" font-family="system-ui,'PingFang TC','Microsoft JhengHei',sans-serif" font-size="10" font-weight="700" fill="#16a34a">Goal</text>
+    <polygon points="508,366 536,379 508,392 480,379" fill="#fef3c7" stroke="#d97706" stroke-width="1.5"/><text x="508" y="379" text-anchor="middle" dominant-baseline="central" font-family="system-ui,'PingFang TC','Microsoft JhengHei',sans-serif" font-size="10" font-weight="700" fill="#d97706">決策</text>
+  
+</svg>

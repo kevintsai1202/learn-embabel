@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400" role="img">
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><polygon points="0,0 10,5 0,10" fill="#64748b"/></marker></defs>
+<rect width="800" height="400" rx="12" fill="#f8fafc"/>
+<text x="400" y="30" text-anchor="middle" font-family="system-ui,'PingFang TC','Microsoft JhengHei',sans-serif" font-size="15" font-weight="700" fill="#0f172a">控制權邊界</text>
+<text x="400" y="50" text-anchor="middle" font-family="system-ui,'PingFang TC','Microsoft JhengHei',sans-serif" font-size="11" font-weight="600" fill="#64748b">LLM 只在 action 內工作，整體流程由 planner 控制</text>
+
+    <rect x="60" y="90" width="680" height="56" rx="4" fill="#ede9fe" stroke="#7c3aed" stroke-width="1.5"/><text x="400" y="118" text-anchor="middle" dominant-baseline="central" font-family="system-ui,'PingFang TC','Microsoft JhengHei',sans-serif" font-size="14" font-weight="700" fill="#7c3aed">Planner（依條件推導 action chain・可 review・可測試）</text>
+    <rect x="80" y="220" width="180" height="110" rx="4" fill="#ffffff" stroke="#e2e8f0" stroke-width="1.5"/><text x="170" y="266.5" text-anchor="middle" dominant-baseline="central" font-family="system-ui,'PingFang TC','Microsoft JhengHei',sans-serif" font-size="13" font-weight="700" fill="#0f172a">Action 1</text><text x="170" y="283.5" text-anchor="middle" dominant-baseline="central" font-family="system-ui,'PingFang TC','Microsoft JhengHei',sans-serif" font-size="13" font-weight="700" fill="#0f172a">取得活動報告</text>
+    <rect x="310" y="220" width="180" height="110" rx="4" fill="#ffffff" stroke="#e2e8f0" stroke-width="1.5"/><text x="400" y="266.5" text-anchor="middle" dominant-baseline="central" font-family="system-ui,'PingFang TC','Microsoft JhengHei',sans-serif" font-size="13" font-weight="700" fill="#0f172a">Action 2</text><text x="400" y="283.5" text-anchor="middle" dominant-baseline="central" font-family="system-ui,'PingFang TC','Microsoft JhengHei',sans-serif" font-size="13" font-weight="700" fill="#0f172a">摘要與方案草稿</text>
+    <rect x="540" y="220" width="180" height="110" rx="4" fill="#ffffff" stroke="#e2e8f0" stroke-width="1.5"/><text x="630" y="266.5" text-anchor="middle" dominant-baseline="central" font-family="system-ui,'PingFang TC','Microsoft JhengHei',sans-serif" font-size="13" font-weight="700" fill="#0f172a">Action 3</text><text x="630" y="283.5" text-anchor="middle" dominant-baseline="central" font-family="system-ui,'PingFang TC','Microsoft JhengHei',sans-serif" font-size="13" font-weight="700" fill="#0f172a">審核輸出</text>
+    <rect x="330" y="285" width="140" height="34" rx="6" fill="#fef3c7" stroke="#d97706"/>
+    <text x="400" y="302" text-anchor="middle" font-family="system-ui,'PingFang TC','Microsoft JhengHei',sans-serif" font-size="12" font-weight="700" fill="#d97706">LLM 在這裡</text>
+    <rect x="560" y="285" width="140" height="34" rx="6" fill="#fef3c7" stroke="#d97706"/>
+    <text x="630" y="302" text-anchor="middle" font-family="system-ui,'PingFang TC','Microsoft JhengHei',sans-serif" font-size="12" font-weight="700" fill="#d97706">LLM 在這裡</text>
+    <line x1="170" y1="148" x2="170" y2="216" stroke="#64748b" stroke-width="2"  marker-end="url(#arrow)"/>
+    <line x1="400" y1="148" x2="400" y2="216" stroke="#64748b" stroke-width="2"  marker-end="url(#arrow)"/>
+    <line x1="630" y1="148" x2="630" y2="216" stroke="#64748b" stroke-width="2"  marker-end="url(#arrow)"/>
+    <line x1="262" y1="275" x2="306" y2="275" stroke="#64748b" stroke-width="2"  marker-end="url(#arrow)"/>
+    <line x1="492" y1="275" x2="536" y2="275" stroke="#64748b" stroke-width="2"  marker-end="url(#arrow)"/>
+    <text x="400" y="370" text-anchor="middle" font-family="system-ui,'PingFang TC','Microsoft JhengHei',sans-serif" font-size="12" font-weight="600" fill="#64748b">LLM 不決定整條流程；它只在被 planner 選中的 action 內做局部推理</text>
+  
+</svg>

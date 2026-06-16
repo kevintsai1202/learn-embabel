@@ -1,0 +1,1 @@
+{"name":"learn-embabel-teaching-site","private":true,"scripts":{"serve":"npx serve ."},"dependencies":{"playwright":"^1.60.0"}}

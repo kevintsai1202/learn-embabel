@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400" role="img">
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><polygon points="0,0 10,5 0,10" fill="#64748b"/></marker></defs>
+<rect width="800" height="400" rx="12" fill="#f8fafc"/>
+<text x="400" y="30" text-anchor="middle" font-family="system-ui,'PingFang TC','Microsoft JhengHei',sans-serif" font-size="15" font-weight="700" fill="#0f172a">把 Gen AI 測試帶回 Java 團隊熟悉的方式</text>
+<text x="400" y="50" text-anchor="middle" font-family="system-ui,'PingFang TC','Microsoft JhengHei',sans-serif" font-size="11" font-weight="600" fill="#64748b">純程式 action 用單元測試；LLM action 驗 prompt・模型角色・工具</text>
+
+    <rect x="40" y="80" width="340" height="280" rx="10" fill="#ffffff" stroke="#e2e8f0" stroke-width="1.5"/>
+    <text x="210" y="102" text-anchor="middle" font-family="system-ui,'PingFang TC','Microsoft JhengHei',sans-serif" font-size="13" font-weight="700" fill="#0f172a">JUnit 測試</text>
+    <rect x="70" y="120" width="280" height="50" rx="4" fill="#ffffff" stroke="#e2e8f0" stroke-width="1.5"/><text x="210" y="145" text-anchor="middle" dominant-baseline="central" font-family="system-ui,'PingFang TC','Microsoft JhengHei',sans-serif" font-size="12" font-weight="700" fill="#0f172a">純程式 action → 一般單元測試</text>
+    <rect x="70" y="185" width="280" height="60" rx="4" fill="#ede9fe" stroke="#7c3aed" stroke-width="1.5"/><text x="210" y="207" text-anchor="middle" dominant-baseline="central" font-family="system-ui,'PingFang TC','Microsoft JhengHei',sans-serif" font-size="12" font-weight="700" fill="#7c3aed">LLM action → PromptRunner</text><text x="210" y="223" text-anchor="middle" dominant-baseline="central" font-family="system-ui,'PingFang TC','Microsoft JhengHei',sans-serif" font-size="12" font-weight="700" fill="#7c3aed">+ mock service</text>
+    <rect x="70" y="260" width="280" height="80" rx="4" fill="#dbeafe" stroke="#2563eb" stroke-width="1.5"/><text x="210" y="292" text-anchor="middle" dominant-baseline="central" font-family="system-ui,'PingFang TC','Microsoft JhengHei',sans-serif" font-size="12" font-weight="700" fill="#2563eb">整合測試：agentic flow</text><text x="210" y="308" text-anchor="middle" dominant-baseline="central" font-family="system-ui,'PingFang TC','Microsoft JhengHei',sans-serif" font-size="12" font-weight="700" fill="#2563eb">是否如預期</text>
+    <rect x="440" y="80" width="320" height="280" rx="10" fill="#fef3c7" stroke="#d97706" stroke-width="1.5"/>
+    <text x="600" y="102" text-anchor="middle" font-family="system-ui,'PingFang TC','Microsoft JhengHei',sans-serif" font-size="13" font-weight="700" fill="#d97706">LLM action 驗證清單</text>
+    <rect x="470" y="125" width="260" height="50" rx="4" fill="#ffffff" stroke="#e2e8f0" stroke-width="1.5"/><text x="600" y="150" text-anchor="middle" dominant-baseline="central" font-family="system-ui,'PingFang TC','Microsoft JhengHei',sans-serif" font-size="12" font-weight="700" fill="#0f172a">prompt 帶齊重要資料？</text>
+    <rect x="470" y="190" width="260" height="50" rx="4" fill="#ffffff" stroke="#e2e8f0" stroke-width="1.5"/><text x="600" y="215" text-anchor="middle" dominant-baseline="central" font-family="system-ui,'PingFang TC','Microsoft JhengHei',sans-serif" font-size="12" font-weight="700" fill="#0f172a">使用正確模型角色？</text>
+    <rect x="470" y="255" width="260" height="50" rx="4" fill="#ffffff" stroke="#e2e8f0" stroke-width="1.5"/><text x="600" y="280" text-anchor="middle" dominant-baseline="central" font-family="system-ui,'PingFang TC','Microsoft JhengHei',sans-serif" font-size="12" font-weight="700" fill="#0f172a">暴露正確工具？</text>
+    <line x1="384" y1="215" x2="436" y2="215" stroke="#64748b" stroke-width="2" stroke-dasharray="4 4" marker-end="url(#arrow)"/>
+  
+</svg>

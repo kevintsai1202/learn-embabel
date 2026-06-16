@@ -1,0 +1,105 @@
+{
+  "_comment": "Antechinus Travel 流程一次完整執行的 ActionAudit 稽核日誌範例 — 供 u-8 觀測與稽核演練使用",
+  "processId": "proc-8f9d-4711-a2c9",
+  "agentClass": "com.antechinus.agent.CustomerCareAgent",
+  "agentDescription": "客戶活動摘要與個人化方案",
+  "status": "SUCCESS",
+  "startTime": "2026-06-14T10:15:30.102Z",
+  "endTime": "2026-06-14T10:15:32.845Z",
+  "totalDurationMs": 2743,
+  "totalTokens": {
+    "prompt": 1240,
+    "completion": 380,
+    "total": 1620
+  },
+  "executionTrace": [
+    {
+      "step": 1,
+      "actionName": "fetchActivity",
+      "executorType": "CODE",
+      "durationMs": 42,
+      "inputTypes": ["CustomerQuery"],
+      "outputType": "TravellerActivity",
+      "input": { "customerId": 4711, "question": "客戶 4711 的近一年活動與專屬方案" },
+      "output": {
+        "name": "Lin Wei-Chen",
+        "tripCount": 8,
+        "totalSpend": 6795.0
+      }
+    },
+    {
+      "step": 2,
+      "actionName": "summarize",
+      "executorType": "LLM",
+      "model": "gpt-4o-mini",
+      "durationMs": 950,
+      "inputTypes": ["TravellerActivity"],
+      "outputType": "ActivitySummary",
+      "toolsExposed": [
+        {
+          "name": "TravellerActivity.totalSpend",
+          "description": "計算該名旅客近一年的累積消費總額（由 Java 計算）"
+        },
+        {
+          "name": "TravellerActivity.tripsPerYear",
+          "description": "計算該名旅客近一年年化的出國趟數（由 Java 計算）"
+        }
+      ],
+      "toolsUsed": [
+        { "name": "TravellerActivity.totalSpend", "arguments": {}, "result": 6795.0 },
+        { "name": "TravellerActivity.tripsPerYear", "arguments": {}, "result": 8.0 }
+      ],
+      "promptUsed": "幫 Antechinus Travel 的同仁理解這位客戶...\n高消費門檻 2000.000000、常旅客門檻每年 10.000000 趟，字數上限 80。\n# 客戶活動\nLin Wei-Chen (Spent: $6795.0, Trips: 8)",
+      "output": {
+        "text": "Lin Wei-Chen 近一年累積消費金額達 $6,795，為高消費客戶。共出國 8 次（年化 8 次），未達每年 10 次之常旅客門檻。行程集中於歐美商務與亞太休閒航線。",
+        "highSpender": true,
+        "frequentTraveler": false
+      },
+      "tokens": { "prompt": 450, "completion": 95, "total": 545 }
+    },
+    {
+      "step": 3,
+      "actionName": "proposeOffer",
+      "executorType": "LLM",
+      "model": "gpt-4o-mini",
+      "durationMs": 1320,
+      "inputTypes": ["ActivitySummary"],
+      "outputType": "OfferDraft",
+      "toolsExposed": [
+        {
+          "name": "travelPolicySearch",
+          "description": "Agentic RAG 工具：動態檢索最新的旅遊促銷政策與折扣條款"
+        }
+      ],
+      "toolsUsed": [
+        {
+          "name": "travelPolicySearch",
+          "arguments": { "query": "high spender discount rules" },
+          "result": "【政策條款 B-1】高消費客戶（近一年消费滿 $2000 以上者），可發送 10% 機票折扣碼，或免費機場接送一次；若非為常旅客，限發送折扣碼。"
+        }
+      ],
+      "promptUsed": "根據客戶活動摘要與公司的服務政策文件，產生個人化方案草稿...\n# 客戶摘要\nLin Wei-Chen 近一年累積消費金額達 $6,795...",
+      "output": {
+        "offer": "Lin Wei-Chen 近一年消費達 $6,795，符合高消費客戶資格。為其量身訂製 10% 機票折扣方案（折扣碼: HS10-WCLIN）。",
+        "rationale": "依據政策條款 B-1，客戶達高消費門檻且非年化常旅客，限提供 10% 折扣碼方案。"
+      },
+      "tokens": { "prompt": 680, "completion": 185, "total": 865 }
+    },
+    {
+      "step": 4,
+      "actionName": "reviewOffer",
+      "executorType": "CODE",
+      "durationMs": 15,
+      "inputTypes": ["OfferDraft"],
+      "outputType": "ReviewedOffer",
+      "input": {
+        "offer": "Lin Wei-Chen 近一年消費達 $6,795，符合高消費客戶資格。為其量身訂製 10% 機票折扣方案（折扣碼: HS10-WCLIN）。",
+        "rationale": "依據政策條款 B-1，客戶達高消費門檻且非年化常旅客，限提供 10% 折扣碼方案。"
+      },
+      "output": {
+        "offer": "Lin Wei-Chen 近一年消費達 $6,795，符合高消費客戶資格。為其量身訂製 10% 機票折扣方案（折扣碼: HS10-WCLIN）。",
+        "approvedBy": "RuleEngine-MaxDiscount10Percent-Gate"
+      }
+    }
+  ]
+}
